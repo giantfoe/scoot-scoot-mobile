@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
     top: 50,
     left: 20,
     right: 20,
-    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    backgroundColor: '#FFFBEA',
     borderRadius: 15,
     padding: 20,
   },
@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
     gap: 5,
   },
   scooterTitle: {
-    color: 'white',
+    color: '#481700',
     fontSize: 20,
     fontWeight: '600',
   },
