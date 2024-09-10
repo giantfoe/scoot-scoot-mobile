@@ -1,4 +1,5 @@
 import { Stack } from 'expo-router';
+import { Button } from 'react-native';
 
 import Map from '~/components/Map';
 import SelectedScooterSheet from '~/components/SelectedScooterSheet';
@@ -9,8 +10,7 @@ export default function Home() {
     <>
       <Stack.Screen options={{ title: 'Home', headerShown: false }} />
       <Map />
-      {/* <Button title="Sign out" onPress={() => supabase.auth.signOut()} /> */}
-
+      <Button title="Sign out" onPress={() => supabase.auth.signOut()} />
       <SelectedScooterSheet />
     </>
   );
