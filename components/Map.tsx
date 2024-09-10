@@ -12,6 +12,8 @@ Mapbox.setAccessToken(process.env.EXPO_PUBLIC_MAPBOX_KEY || '');
 export default function Map() {
   const { directionCoordinates, userLocation, isRideActive } = useScooter();
 
+  console.log('Map - isRideActive:', isRideActive);
+
   return (
     <View style={{ flex: 1 }}>
       <MapView style={{ flex: 1 }} styleURL="mapbox://styles/mapbox/dark-v11">

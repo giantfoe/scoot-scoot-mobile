@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
   },
   infoText: {
-    color: 'white',
+    color: '#481700',
     fontWeight: 'bold',
     fontSize: 18,
   },

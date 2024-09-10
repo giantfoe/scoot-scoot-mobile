@@ -9,7 +9,21 @@ import { useScooter } from '~/providers/ScooterProvider';
 export default function ScooterMarkers() {
   const { setSelectedScooter, nearbyScooters } = useScooter();
 
-  const points = nearbyScooters.map((scooter) => point([scooter.long, scooter.lat], { scooter }));
+  console.log('ScooterMarkers - nearbyScooters:', nearbyScooters);
+
+  if (!Array.isArray(nearbyScooters) || nearbyScooters.length === 0) {
+    console.log('No scooters to display');
+    return null;
+  }
+
+  const points = nearbyScooters
+    .filter(scooter => scooter && typeof scooter.long === 'number' && typeof scooter.lat === 'number')
+    .map((scooter) => point([scooter.long, scooter.lat], { scooter }));
+
+  if (points.length === 0) {
+    console.log('No valid scooter points to display');
+    return null;
+  }
 
   const onPointPress = async (event: OnPressEvent) => {
     if (event.features[0].properties?.scooter) {

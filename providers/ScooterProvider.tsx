@@ -30,16 +30,39 @@ export default function ScooterProvider({ children }: PropsWithChildren) {
 
   useEffect(() => {
     const fetchScooters = async () => {
-      const location = await Location.getCurrentPositionAsync();
-      const { error, data } = await supabase.rpc('nearby_scooters', {
-        lat: location.coords.latitude,
-        long: location.coords.longitude,
-        max_dist_meters: 2000,
-      });
-      if (error) {
-        Alert.alert('Failed to fetch scooters');
-      } else {
-        setNearbyScooters(data);
+      try {
+        const { status } = await Location.requestForegroundPermissionsAsync();
+        if (status !== 'granted') {
+          console.error('Location permission not granted');
+          Alert.alert('Permission to access location was denied');
+          return;
+        }
+
+        const location = await Location.getCurrentPositionAsync();
+        console.log('Current location:', location);
+
+        const { data, error } = await supabase.rpc('nearby_scooters', {
+          params: {
+            user_lat: location.coords.latitude,
+            user_lng: location.coords.longitude,
+            max_dist_meters: 2000,
+          }
+        });
+
+        if (error) {
+          console.error('Supabase error:', error);
+          Alert.alert('Failed to fetch scooters', JSON.stringify(error));
+        } else if (data && Array.isArray(data) && data.length > 0) {
+          console.log('Fetched scooters:', data);
+          setNearbyScooters(data);
+        } else {
+          console.warn('No scooters found or invalid data:', data);
+          setNearbyScooters([]);
+          Alert.alert('No scooters found', 'There are no scooters available within 2000 meters.');
+        }
+      } catch (error) {
+        console.error('Unexpected error:', error);
+        Alert.alert('Failed to fetch scooters', 'An unexpected error occurred: ' + JSON.stringify(error));
       }
     };
 

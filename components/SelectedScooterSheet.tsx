@@ -10,20 +10,29 @@ import scooterImage from '~/assets/scooter.png';
 import { useScooter } from '~/providers/ScooterProvider';
 
 export default function SelectedScooterSheet() {
-  const { selectedScooter, duration, distance, isNearby, startJourney } = useScooter();
+  const { selectedScooter, duration, distance, isNearby, startJourney, isRideActive } = useScooter();
 
   const bottomSheetRef = useRef<BottomSheet>(null);
 
   useEffect(() => {
-    if (selectedScooter) {
+    console.log('SelectedScooterSheet - isRideActive:', isRideActive);
+    console.log('SelectedScooterSheet - selectedScooter:', selectedScooter);
+    if (selectedScooter && !isRideActive) {
       bottomSheetRef.current?.expand();
+    } else {
+      bottomSheetRef.current?.close();
     }
-  }, [selectedScooter]);
+  }, [selectedScooter, isRideActive]);
 
   const handleStartJourney = () => {
     console.log('Start journey button pressed');
     startJourney();
   };
+
+  if (isRideActive) {
+    console.log('SelectedScooterSheet not rendering due to active ride');
+    return null;
+  }
 
   return (
     <BottomSheet
