@@ -14,6 +14,19 @@ export default function ScooterProvider({ children }: PropsWithChildren) {
   const [selectedScooter, setSelectedScooter] = useState();
   const [direction, setDirection] = useState();
   const [isNearby, setIsNearby] = useState(false);
+  const [isRideActive, setIsRideActive] = useState(false);
+
+  const startJourney = () => {
+    console.log('Starting journey...');
+    setIsRideActive(true);
+    console.log('isRideActive set to true');
+  };
+
+  const endJourney = () => {
+    console.log('Ending journey...');
+    setIsRideActive(false);
+    console.log('isRideActive set to false');
+  };
 
   useEffect(() => {
     const fetchScooters = async () => {
@@ -85,6 +98,9 @@ export default function ScooterProvider({ children }: PropsWithChildren) {
         duration: direction?.routes?.[0]?.duration,
         distance: direction?.routes?.[0]?.distance,
         isNearby,
+        isRideActive,
+        startJourney,
+        endJourney,
       }}>
       {children}
     </ScooterContext.Provider>

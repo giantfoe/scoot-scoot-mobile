@@ -1,46 +1,31 @@
-import { forwardRef } from 'react';
-import { StyleSheet, Text, TouchableOpacity, TouchableOpacityProps } from 'react-native';
+import React from 'react';
+import { TouchableOpacity, Text, StyleSheet } from 'react-native';
 
-type ButtonProps = {
-  onPress?: TouchableOpacityProps['onPress'];
-  title?: string;
-} & TouchableOpacityProps;
-
-export const Button = forwardRef<TouchableOpacity, ButtonProps>(
-  ({ onPress, title, ...otherProps }, ref) => {
-    return (
-      <TouchableOpacity
-        ref={ref}
-        style={[styles.button, { backgroundColor: otherProps.disabled ? 'gray' : '#38C400' }]}
-        onPress={onPress}
-        {...otherProps}>
-        <Text style={styles.buttonText}>{title}</Text>
-      </TouchableOpacity>
-    );
-  }
-);
+export function Button({ title, onPress, disabled }) {
+  return (
+    <TouchableOpacity 
+      style={[styles.button, disabled && styles.disabled]} 
+      onPress={onPress}
+      disabled={disabled}
+    >
+      <Text style={styles.buttonText}>{title}</Text>
+    </TouchableOpacity>
+  );
+}
 
 const styles = StyleSheet.create({
   button: {
+    backgroundColor: '#42E100',
+    padding: 10,
+    borderRadius: 5,
     alignItems: 'center',
-    backgroundColor: '#38C400',
-    borderRadius: 10,
-    elevation: 5,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    padding: 16,
-    shadowColor: '#000',
-    shadowOffset: {
-      height: 2,
-      width: 0,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
+  },
+  disabled: {
+    backgroundColor: 'gray',
   },
   buttonText: {
-    color: '#FFFFFF',
-    fontSize: 18,
-    fontWeight: '700',
-    textAlign: 'center',
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });

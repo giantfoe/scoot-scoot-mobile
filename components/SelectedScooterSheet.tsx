@@ -10,7 +10,7 @@ import scooterImage from '~/assets/scooter.png';
 import { useScooter } from '~/providers/ScooterProvider';
 
 export default function SelectedScooterSheet() {
-  const { selectedScooter, duration, distance, isNearby } = useScooter();
+  const { selectedScooter, duration, distance, isNearby, startJourney } = useScooter();
 
   const bottomSheetRef = useRef<BottomSheet>(null);
 
@@ -19,6 +19,11 @@ export default function SelectedScooterSheet() {
       bottomSheetRef.current?.expand();
     }
   }, [selectedScooter]);
+
+  const handleStartJourney = () => {
+    console.log('Start journey button pressed');
+    startJourney();
+  };
 
   return (
     <BottomSheet
@@ -33,9 +38,9 @@ export default function SelectedScooterSheet() {
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
             <Image source={scooterImage} style={{ width: 60, height: 60 }} />
             <View style={{ flex: 1, gap: 5 }}>
-              <Text style={{ color: 'white', fontSize: 20, fontWeight: '600' }}>Lime - S</Text>
+              <Text style={{ color: 'white', fontSize: 18, fontWeight: '600' }}>SCOOT-SCOOT</Text>
               <Text style={{ color: 'gray', fontSize: 18 }}>
-                id-{selectedScooter.id} · Madison Avenue
+                id-{selectedScooter.id} · SM☀️VE
               </Text>
             </View>
             <View style={{ gap: 5 }}>
@@ -67,7 +72,11 @@ export default function SelectedScooterSheet() {
           </View>
           {/* Bottom part */}
           <View>
-            <Button title="Start journey" disabled={!isNearby} />
+            <Button 
+              title="Start journey" 
+              disabled={!isNearby} 
+              onPress={handleStartJourney}
+            />
           </View>
         </BottomSheetView>
       )}

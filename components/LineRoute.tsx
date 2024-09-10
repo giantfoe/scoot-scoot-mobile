@@ -15,12 +15,12 @@ export default function LineRoute({ coordinates }: { coordinates: Position[] }) 
         },
       }}>
       <LineLayer
-        id="exampleLineLayer"
+        id="routeLine"
         style={{
           lineColor: '#42E100',
+          lineWidth: 5,
           lineCap: 'round',
           lineJoin: 'round',
-          lineWidth: 7,
         }}
       />
     </ShapeSource>
