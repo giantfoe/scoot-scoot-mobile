@@ -61,7 +61,7 @@ export default function Sidebar() {
       </View>
 
       <TouchableOpacity style={styles.signOutButton} onPress={handleSignOut}>
-        <FontAwesome6 name="door-open" size={20} color="#FF3B30" />
+        <FontAwesome6 name="sign-out-alt" size={20} color="#FF3B30" />
         <Text style={styles.signOutText}>Sign Out</Text>
       </TouchableOpacity>
     </ScrollView>

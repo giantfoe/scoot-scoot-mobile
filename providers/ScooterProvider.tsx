@@ -22,6 +22,7 @@ interface ScooterContextType {
   rideDistance: number;
   direction: any;
   setDirection: (direction: any) => void;
+  distance: number;
   // Add other properties as needed
 }
 
@@ -29,7 +30,7 @@ const ScooterContext = createContext<ScooterContextType | undefined>(undefined);
 
 export default function ScooterProvider({ children }: PropsWithChildren) {
   const [nearbyScooters, setNearbyScooters] = useState<any[]>([]);
-  const [selectedScooter, setSelectedScooter] = useState<any | null>(null);
+  const [selectedScooter, setSelectedScooter] = useState<Scooter | null>(null);
   const [userLocation, setUserLocation] = useState<{ latitude: number; longitude: number } | null>(null);
   const [isRideActive, setIsRideActive] = useState(false);
   const [isNearby, setIsNearby] = useState(false);
@@ -161,6 +162,7 @@ export default function ScooterProvider({ children }: PropsWithChildren) {
     rideDistance,
     direction,
     setDirection,
+    distance: 0,
     // Add other properties as needed
   };
 

@@ -10,10 +10,18 @@ import { useScooter } from '~/providers/ScooterProvider';
 Mapbox.setAccessToken(process.env.EXPO_PUBLIC_MAPBOX_KEY || '');
 
 export default function Map() {
-  const { direction, userLocation, isRideActive } = useScooter();
+  const { selectedScooter, userLocation, isRideActive } = useScooter();
 
-  console.log('Map - isRideActive:', isRideActive);
-  console.log('Map - direction:', direction);
+  const routeCoordinates = userLocation && selectedScooter
+    ? [
+        [userLocation.longitude, userLocation.latitude],
+        [selectedScooter.longitude, selectedScooter.latitude]
+      ]
+    : null;
+
+  console.log('userLocation:', userLocation);
+  console.log('selectedScooter:', selectedScooter);
+  console.log('routeCoordinates:', routeCoordinates);
 
   return (
     <View style={{ flex: 1 }}>
@@ -25,12 +33,8 @@ export default function Map() {
           centerCoordinate={userLocation ? [userLocation.longitude, userLocation.latitude] : undefined}
         />
         <LocationPuck puckBearingEnabled puckBearing="heading" pulsing={{ isEnabled: true }} />
-
         <ScooterMarkers />
-
-        {direction && direction.routes && direction.routes[0] && (
-          <LineRoute coordinates={direction.routes[0].geometry.coordinates} />
-        )}
+        {routeCoordinates && <LineRoute coordinates={routeCoordinates} />}
       </MapView>
       {isRideActive && <RideActive />}
     </View>
