@@ -8,46 +8,44 @@ import { supabase } from '~/lib/supabase';
 import { getDirections } from '~/services/directions';
 import { locationSimulator } from '~/services/locationSimulator';
 
-const ScooterContext = createContext({});
+// Define the shape of your context
+interface ScooterContextType {
+  nearbyScooters: any[];
+  selectedScooter: any | null;
+  setSelectedScooter: (scooter: any) => void;
+  userLocation: { latitude: number; longitude: number } | null;
+  isRideActive: boolean;
+  isNearby: boolean;
+  setIsNearby: (isNearby: boolean) => void;
+  startJourney: (scooter: any) => void;
+  endJourney: () => void;
+  rideDistance: number;
+  // Add other properties as needed
+}
+
+const ScooterContext = createContext<ScooterContextType | undefined>(undefined);
 
 export default function ScooterProvider({ children }: PropsWithChildren) {
-  const [nearbyScooters, setNearbyScooters] = useState([]);
-  const [selectedScooter, setSelectedScooter] = useState();
-  const [direction, setDirection] = useState();
-  const [isNearby, setIsNearby] = useState(false);
+  const [nearbyScooters, setNearbyScooters] = useState<any[]>([]);
+  const [selectedScooter, setSelectedScooter] = useState<any | null>(null);
+  const [userLocation, setUserLocation] = useState<{ latitude: number; longitude: number } | null>(null);
   const [isRideActive, setIsRideActive] = useState(false);
-  const [userLocation, setUserLocation] = useState(null);
+  const [isNearby, setIsNearby] = useState(false);
+  const [rideDistance, setRideDistance] = useState(0);
 
-  const startJourney = async () => {
-    console.log('Starting journey...');
-    try {
-      if (selectedScooter) {
-        const updatedScooter = {
-          ...selectedScooter,
-          lat: userLocation.latitude,
-          long: userLocation.longitude,
-        };
-        setSelectedScooter(updatedScooter);
-
-        setNearbyScooters(prevScooters =>
-          prevScooters.map(scooter =>
-            scooter.id === selectedScooter.id ? updatedScooter : scooter
-          )
-        );
-      }
-
-      setIsRideActive(true);
-      console.log('isRideActive set to true');
-    } catch (error) {
-      console.error('Error starting journey:', error);
-      Alert.alert('Failed to start journey', 'An unexpected error occurred: ' + JSON.stringify(error));
-    }
+  const startJourney = (scooter: any) => {
+    setSelectedScooter(scooter);
+    setIsRideActive(true);
+    setRideDistance(0);
+    setIsNearby(false);
+    // Add any other logic needed when starting a journey
   };
 
   const endJourney = () => {
-    console.log('Ending journey...');
     setIsRideActive(false);
-    console.log('isRideActive set to false');
+    setSelectedScooter(null);
+    setIsNearby(false);
+    // Add any other logic needed when ending a journey
   };
 
   useEffect(() => {
@@ -145,25 +143,31 @@ export default function ScooterProvider({ children }: PropsWithChildren) {
     }
   }, [selectedScooter]);
 
+  const contextValue: ScooterContextType = {
+    nearbyScooters,
+    selectedScooter,
+    setSelectedScooter,
+    userLocation,
+    isRideActive,
+    isNearby,
+    setIsNearby,
+    startJourney,
+    endJourney,
+    rideDistance,
+    // Add other properties as needed
+  };
+
   return (
-    <ScooterContext.Provider
-      value={{
-        nearbyScooters,
-        selectedScooter,
-        setSelectedScooter,
-        direction,
-        directionCoordinates: direction?.routes?.[0]?.geometry?.coordinates,
-        duration: direction?.routes?.[0]?.duration,
-        distance: direction?.routes?.[0]?.distance,
-        isNearby,
-        isRideActive,
-        startJourney,
-        endJourney,
-        userLocation,
-      }}>
+    <ScooterContext.Provider value={contextValue}>
       {children}
     </ScooterContext.Provider>
   );
 }
 
-export const useScooter = () => useContext(ScooterContext);
+export const useScooter = () => {
+  const context = useContext(ScooterContext);
+  if (context === undefined) {
+    throw new Error('useScooter must be used within a ScooterProvider');
+  }
+  return context;
+};

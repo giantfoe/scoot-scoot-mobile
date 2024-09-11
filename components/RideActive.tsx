@@ -6,7 +6,7 @@ import { useScooter } from '~/providers/ScooterProvider';
 import scooterImage from '~/assets/scooter.png';
 
 export default function RideActive() {
-  const { rideDistance, endJourney } = useScooter();
+  const { selectedScooter, rideDistance, endJourney } = useScooter();
   const [elapsedTime, setElapsedTime] = React.useState(0);
 
   React.useEffect(() => {
@@ -21,6 +21,10 @@ export default function RideActive() {
     const secs = seconds % 60;
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
+
+  if (!selectedScooter) {
+    return null; // or return a loading state
+  }
 
   return (
     <View style={styles.container}>
