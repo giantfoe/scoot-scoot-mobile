@@ -72,9 +72,17 @@ export default function SelectedScooterSheet() {
                   gap: 5,
                   alignSelf: 'flex-start',
                 }}>
-                <FontAwesome6 name="clock" size={18} color="#481700" />
-                <Text style={{ color: '#481700', fontWeight: 'bold', fontSize: 18 }}>
-                  {(duration / 60).toFixed(0)} min
+                <FontAwesome6 
+                  name={getBatteryIcon(selectedScooter.batterypercentage)} 
+                  size={18} 
+                  color={getBatteryColor(selectedScooter.batterypercentage)}
+                />
+                <Text style={{ 
+                  color: getBatteryColor(selectedScooter.batterypercentage), 
+                  fontWeight: 'bold', 
+                  fontSize: 18 
+                }}>
+                  {selectedScooter.batterypercentage}%
                 </Text>
               </View>
             </View>
@@ -82,7 +90,7 @@ export default function SelectedScooterSheet() {
           {/* Bottom part */}
           <View>
             <Button 
-              title="Start journey" 
+              title="UNLOCK SCOOTER" 
               disabled={!isNearby} 
               onPress={handleStartJourney}
             />
@@ -92,3 +100,16 @@ export default function SelectedScooterSheet() {
     </BottomSheet>
   );
 }
+const getBatteryIcon = (percentage: number) => {
+  if (percentage > 75) return 'battery-full';
+  if (percentage > 50) return 'battery-three-quarters';
+  if (percentage > 25) return 'battery-half';
+  if (percentage > 10) return 'battery-quarter';
+  return 'battery-empty';
+};
+
+const getBatteryColor = (percentage: number) => {
+  if (percentage > 50) return '#42E100';  // Green
+  if (percentage > 25) return '#FFA500';  // Orange
+  return '#FF0000';  // Red
+};
