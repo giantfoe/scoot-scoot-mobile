@@ -6,6 +6,7 @@ import { Alert } from 'react-native';
 
 import { supabase } from '~/lib/supabase';
 import { getDirections } from '~/services/directions';
+import { locationSimulator } from '~/services/locationSimulator';
 
 const ScooterContext = createContext({});
 
@@ -15,11 +16,32 @@ export default function ScooterProvider({ children }: PropsWithChildren) {
   const [direction, setDirection] = useState();
   const [isNearby, setIsNearby] = useState(false);
   const [isRideActive, setIsRideActive] = useState(false);
+  const [userLocation, setUserLocation] = useState(null);
 
-  const startJourney = () => {
+  const startJourney = async () => {
     console.log('Starting journey...');
-    setIsRideActive(true);
-    console.log('isRideActive set to true');
+    try {
+      if (selectedScooter) {
+        const updatedScooter = {
+          ...selectedScooter,
+          lat: userLocation.latitude,
+          long: userLocation.longitude,
+        };
+        setSelectedScooter(updatedScooter);
+
+        setNearbyScooters(prevScooters =>
+          prevScooters.map(scooter =>
+            scooter.id === selectedScooter.id ? updatedScooter : scooter
+          )
+        );
+      }
+
+      setIsRideActive(true);
+      console.log('isRideActive set to true');
+    } catch (error) {
+      console.error('Error starting journey:', error);
+      Alert.alert('Failed to start journey', 'An unexpected error occurred: ' + JSON.stringify(error));
+    }
   };
 
   const endJourney = () => {
@@ -67,6 +89,19 @@ export default function ScooterProvider({ children }: PropsWithChildren) {
     };
 
     fetchScooters();
+    
+    // Start the location simulator
+    locationSimulator.start((location) => {
+      setUserLocation({
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+      });
+      // You might want to update other state or perform actions here
+    });
+
+    return () => {
+      locationSimulator.stop();
+    };
   }, []);
 
   useEffect(() => {
@@ -124,6 +159,7 @@ export default function ScooterProvider({ children }: PropsWithChildren) {
         isRideActive,
         startJourney,
         endJourney,
+        userLocation,
       }}>
       {children}
     </ScooterContext.Provider>

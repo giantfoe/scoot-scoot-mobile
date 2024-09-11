@@ -6,6 +6,8 @@ import pin from '~/assets/pin.png';
 // import scooters from '~/data/scooters.json';
 import { useScooter } from '~/providers/ScooterProvider';
 
+const SCOOTER_COLOR = '#481700'; // Updated color as requested
+
 export default function ScooterMarkers() {
   const { setSelectedScooter, nearbyScooters } = useScooter();
 
@@ -54,9 +56,19 @@ export default function ScooterMarkers() {
         filter={['has', 'point_count']}
         style={{
           circlePitchAlignment: 'map',
-          circleColor: '#42E100',
-          circleRadius: 20,
-          circleOpacity: 1,
+          circleColor: SCOOTER_COLOR, // Use the new color constant here
+          circleRadius: [
+            'step',
+            ['get', 'point_count'],
+            20,    // Default radius
+            5,     // If point_count >= 5, radius is 25
+            25,
+            10,    // If point_count >= 10, radius is 30
+            30,
+            20,    // If point_count >= 20, radius is 35
+            35
+          ],
+          circleOpacity: 0.84,
           circleStrokeWidth: 2,
           circleStrokeColor: 'white',
         }}
@@ -67,7 +79,7 @@ export default function ScooterMarkers() {
         filter={['!', ['has', 'point_count']]}
         style={{
           iconImage: 'pin',
-          iconSize: 0.5,
+          iconSize: 1.5, // Changed from 0.5 to 1.5 (3x the original size)
           iconAllowOverlap: true,
           iconAnchor: 'bottom',
         }}

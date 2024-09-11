@@ -6,7 +6,7 @@ import { useScooter } from '~/providers/ScooterProvider';
 import scooterImage from '~/assets/scooter.png';
 
 export default function RideActive() {
-  const { selectedScooter, distance, endJourney } = useScooter();
+  const { rideDistance, endJourney } = useScooter();
   const [elapsedTime, setElapsedTime] = React.useState(0);
 
   React.useEffect(() => {
@@ -37,7 +37,7 @@ export default function RideActive() {
             <View style={styles.infoItem}>
               <FontAwesome6 name="flag-checkered" size={18} color="#42E100" />
               <Text style={styles.infoText}>
-                {((distance || 0) / 1000).toFixed(1)} km
+                {rideDistance.toFixed(2)} km
               </Text>
             </View>
             <View style={styles.infoItem}>

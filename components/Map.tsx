@@ -18,8 +18,9 @@ export default function Map() {
     <View style={{ flex: 1 }}>
       <MapView style={{ flex: 1 }} styleURL="mapbox://styles/mapbox/dark-v11">
         <Camera 
-          followZoomLevel={14} 
-          followUserLocation 
+          followZoomLevel={isRideActive ? 25 : 14}
+          followUserLocation
+          followUserMode="normal"
           centerCoordinate={userLocation ? [userLocation.longitude, userLocation.latitude] : undefined}
         />
         <LocationPuck puckBearingEnabled puckBearing="heading" pulsing={{ isEnabled: true }} />
