@@ -3,8 +3,8 @@ import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
 import { useEffect, useRef } from 'react';
 import { Text, Image, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-
 import { Button } from './Button';
+import { Link } from 'expo-router';
 
 import scooterImage from '~/assets/scooter.png';
 import { useScooter } from '~/providers/ScooterProvider';
@@ -89,11 +89,11 @@ export default function SelectedScooterSheet() {
           </View>
           {/* Bottom part */}
           <View>
-            <Button 
-              title="UNLOCK SCOOTER" 
-              disabled={!isNearby} 
-              onPress={handleStartJourney}
-            />
+            <Link href={`/ScooterScan?id=${selectedScooter?.id}`} asChild>
+              <Button 
+                title="UNLOCK SCOOTER" 
+              />
+            </Link>
           </View>
         </BottomSheetView>
       )}
