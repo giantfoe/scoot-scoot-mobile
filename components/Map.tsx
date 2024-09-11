@@ -10,9 +10,10 @@ import { useScooter } from '~/providers/ScooterProvider';
 Mapbox.setAccessToken(process.env.EXPO_PUBLIC_MAPBOX_KEY || '');
 
 export default function Map() {
-  const { directionCoordinates, userLocation, isRideActive } = useScooter();
+  const { direction, userLocation, isRideActive } = useScooter();
 
   console.log('Map - isRideActive:', isRideActive);
+  console.log('Map - direction:', direction);
 
   return (
     <View style={{ flex: 1 }}>
@@ -27,7 +28,9 @@ export default function Map() {
 
         <ScooterMarkers />
 
-        {directionCoordinates && <LineRoute coordinates={directionCoordinates} />}
+        {direction && direction.routes && direction.routes[0] && (
+          <LineRoute coordinates={direction.routes[0].geometry.coordinates} />
+        )}
       </MapView>
       {isRideActive && <RideActive />}
     </View>

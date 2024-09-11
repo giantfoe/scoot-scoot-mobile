@@ -6,7 +6,7 @@ import { Alert } from 'react-native';
 
 import { supabase } from '~/lib/supabase';
 import { getDirections } from '~/services/directions';
-import { locationSimulator } from '~/services/locationSimulator';
+
 
 // Define the shape of your context
 interface ScooterContextType {
@@ -20,6 +20,8 @@ interface ScooterContextType {
   startJourney: (scooter: any) => void;
   endJourney: () => void;
   rideDistance: number;
+  direction: any;
+  setDirection: (direction: any) => void;
   // Add other properties as needed
 }
 
@@ -32,6 +34,7 @@ export default function ScooterProvider({ children }: PropsWithChildren) {
   const [isRideActive, setIsRideActive] = useState(false);
   const [isNearby, setIsNearby] = useState(false);
   const [rideDistance, setRideDistance] = useState(0);
+  const [direction, setDirection] = useState<any>(null);
 
   const startJourney = (scooter: any) => {
     setSelectedScooter(scooter);
@@ -88,18 +91,18 @@ export default function ScooterProvider({ children }: PropsWithChildren) {
 
     fetchScooters();
     
-    // Start the location simulator
-    locationSimulator.start((location) => {
-      setUserLocation({
-        latitude: location.coords.latitude,
-        longitude: location.coords.longitude,
-      });
-      // You might want to update other state or perform actions here
-    });
+    // // Start the location simulator
+    // locationSimulator.start((location) => {
+    //   setUserLocation({
+    //     latitude: location.coords.latitude,
+    //     longitude: location.coords.longitude,
+    //   });
+    //   // You might want to update other state or perform actions here
+    // });
 
-    return () => {
-      locationSimulator.stop();
-    };
+    // return () => {
+    //   locationSimulator.stop();
+    // };
   }, []);
 
   useEffect(() => {
@@ -128,20 +131,22 @@ export default function ScooterProvider({ children }: PropsWithChildren) {
 
   useEffect(() => {
     const fetchDirections = async () => {
-      const myLocation = await Location.getCurrentPositionAsync();
-
-      const newDirection = await getDirections(
-        [myLocation.coords.longitude, myLocation.coords.latitude],
-        [selectedScooter.long, selectedScooter.lat]
-      );
-      setDirection(newDirection);
+      if (selectedScooter && userLocation) {
+        try {
+          const newDirection = await getDirections(
+            [userLocation.longitude, userLocation.latitude],
+            [selectedScooter.long, selectedScooter.lat]
+          );
+          setDirection(newDirection);
+        } catch (error) {
+          console.error('Error fetching directions:', error);
+          Alert.alert('Error', 'Failed to fetch directions');
+        }
+      }
     };
 
-    if (selectedScooter) {
-      fetchDirections();
-      setIsNearby(false);
-    }
-  }, [selectedScooter]);
+    fetchDirections();
+  }, [selectedScooter, userLocation]);
 
   const contextValue: ScooterContextType = {
     nearbyScooters,
@@ -154,6 +159,8 @@ export default function ScooterProvider({ children }: PropsWithChildren) {
     startJourney,
     endJourney,
     rideDistance,
+    direction,
+    setDirection,
     // Add other properties as needed
   };
 

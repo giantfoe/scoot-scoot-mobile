@@ -1,27 +1,26 @@
 import { LineLayer, ShapeSource } from '@rnmapbox/maps';
-import { Position } from '@rnmapbox/maps/lib/typescript/src/types/Position';
 
-export default function LineRoute({ coordinates }: { coordinates: Position[] }) {
+interface LineRouteProps {
+  coordinates: number[][];
+}
+
+export default function LineRoute({ coordinates }: LineRouteProps) {
   return (
-    <ShapeSource
-      id="routeSource"
-      lineMetrics
-      shape={{
-        properties: {},
-        type: 'Feature',
-        geometry: {
-          type: 'LineString',
-          coordinates,
-        },
-      }}>
+    <ShapeSource id="routeSource" shape={{
+      type: 'Feature',
+      properties: {},
+      geometry: {
+        type: 'LineString',
+        coordinates: coordinates
+      }
+    }}>
       <LineLayer
-        id="routeLine"
+        id="routeFill"
         style={{
-          lineColor: '#ff9900',
-          lineWidth: 5,
+          lineColor: '#42E100',
+          lineWidth: 3,
           lineCap: 'round',
-          lineJoin: 'round',
-          lineOpacity: 0.5,
+          lineJoin: 'round'
         }}
       />
     </ShapeSource>
