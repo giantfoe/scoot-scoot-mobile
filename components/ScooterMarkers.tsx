@@ -18,7 +18,12 @@ export default function ScooterMarkers() {
 
   const points = nearbyScooters
     .filter(scooter => scooter && typeof scooter.long === 'number' && typeof scooter.lat === 'number')
-    .map((scooter) => point([scooter.long, scooter.lat], { scooter }));
+    .map((scooter) => point([scooter.long, scooter.lat], { 
+      scooter: {
+        ...scooter,
+        batterypercentage: scooter.batterypercentage
+      } 
+    }));
 
   if (points.length === 0) {
     console.log('No valid scooter points to display');
