@@ -2,7 +2,7 @@ import getDistance from '@turf/distance';
 import { point } from '@turf/helpers';
 import * as Location from 'expo-location';
 import { PropsWithChildren, createContext, useContext, useEffect, useState } from 'react';
-import { Alert } from 'react-native';
+import { Alert, NativeModules } from 'react-native';
 import { BlurView } from 'expo-blur';
 
 import { supabase } from '~/lib/supabase';
@@ -27,10 +27,14 @@ interface ScooterContextType {
   direction: any;
   setDirection: (direction: any) => void;
   distance: number;
+  balance: number;
+  openWallet: () => void;
   // Add other properties as needed
 }
 
 const ScooterContext = createContext<ScooterContextType | undefined>(undefined);
+
+const { ScooterRideActivity } = NativeModules;
 
 export default function ScooterProvider({ children }: PropsWithChildren) {
   const [nearbyScooters, setNearbyScooters] = useState<any[]>([]);
@@ -41,20 +45,45 @@ export default function ScooterProvider({ children }: PropsWithChildren) {
   const [rideDistance, setRideDistance] = useState(0);
   const [direction, setDirection] = useState<any>(null);
   const [routeCoordinates, setRouteCoordinates] = useState<[number, number][] | null>(null);
+  const [balance, setBalance] = useState(0);
+  const [activityId, setActivityId] = useState<string | null>(null);
 
-  const startJourney = (scooter: any) => {
+  const startJourney = async (scooter: any) => {
     setSelectedScooter(scooter);
     setIsRideActive(true);
     setRideDistance(0);
     setIsNearby(false);
     // Add any other logic needed when starting a journey
+    if (Platform.OS === 'ios') {
+      try {
+        const id = await ScooterRideActivity.startRideActivity(scooter.id);
+        setActivityId(id);
+      } catch (error) {
+        console.error('Failed to start ride activity:', error);
+      }
+    }
   };
 
-  const endJourney = () => {
+  const endJourney = async () => {
     setIsRideActive(false);
     setSelectedScooter(null);
     setIsNearby(false);
     // Add any other logic needed when ending a journey
+    if (Platform.OS === 'ios' && activityId) {
+      try {
+        await ScooterRideActivity.endRideActivity(activityId);
+        setActivityId(null);
+      } catch (error) {
+        console.error('Failed to end ride activity:', error);
+      }
+    }
+  };
+
+  const openWallet = () => {
+    // This is where you would typically open your wallet screen or modal
+    Alert.alert('Wallet', 'Wallet functionality coming soon!');
+    // You could navigate to a Wallet screen here, for example:
+    // navigation.navigate('Wallet');
   };
 
   useEffect(() => {
@@ -188,8 +217,33 @@ export default function ScooterProvider({ children }: PropsWithChildren) {
     setDirection,
     distance: 0,
     routeCoordinates,
+    balance,
+    openWallet,
     // Add other properties as needed
   };
+
+  useEffect(() => {
+    // This is where you would typically fetch the user's balance from your backend
+    // For now, we'll just set a dummy value
+    setBalance(50.00);
+  }, []);
+
+  // Set up a timer to update the ride duration
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (isRideActive && Platform.OS === 'ios' && activityId) {
+      timer = setInterval(async () => {
+        try {
+          await ScooterRideActivity.updateRideActivity(activityId, rideDistance);
+        } catch (error) {
+          console.error('Failed to update ride activity:', error);
+        }
+      }, 1000); // Update every second
+    }
+    return () => {
+      if (timer) clearInterval(timer);
+    };
+  }, [isRideActive, activityId, rideDistance]);
 
   return (
     <ScooterContext.Provider value={contextValue}>

@@ -1,9 +1,11 @@
+import React from 'react';
 import Mapbox, { Camera, LocationPuck, MapView } from '@rnmapbox/maps';
 import { View } from 'react-native';
 
 import LineRoute from './LineRoute';
 import ScooterMarkers from './ScooterMarkers';
 import RideActive from './RideActive';
+import WalletBalance from './WalletBalance';
 
 import { useScooter } from '~/providers/ScooterProvider';
 
@@ -11,10 +13,6 @@ Mapbox.setAccessToken(process.env.EXPO_PUBLIC_MAPBOX_KEY || '');
 
 export default function Map() {
   const { selectedScooter, userLocation, isRideActive, routeCoordinates } = useScooter();
-
-  console.log('Map - userLocation:', userLocation);
-  console.log('Map - selectedScooter:', selectedScooter);
-  console.log('Map - routeCoordinates:', routeCoordinates);
 
   return (
     <View style={{ flex: 1 }}>
@@ -29,7 +27,7 @@ export default function Map() {
         <ScooterMarkers />
         {routeCoordinates && <LineRoute coordinates={routeCoordinates} />}
       </MapView>
-      {isRideActive && <RideActive />}
+      {isRideActive ? <RideActive /> : <WalletBalance />}
     </View>
   );
 }

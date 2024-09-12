@@ -3,7 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'reac
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { useScooter } from '~/providers/ScooterProvider';
 
-export default function ScooterScan() {
+function ScooterScan() {
   const { id } = useLocalSearchParams();
   const [scooterId, setScooterId] = useState(id ? id.toString() : '');
   const router = useRouter();
@@ -83,3 +83,5 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 });
+
+export default React.forwardRef((props, ref) => <ScooterScan {...props} />);

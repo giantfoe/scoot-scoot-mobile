@@ -1,4 +1,4 @@
-import { Stack } from 'expo-router';
+import React from 'react';
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Drawer } from 'react-native-drawer-layout';
@@ -29,23 +29,19 @@ export default function Home() {
         drawerType="front"
         drawerStyle={{ backgroundColor: 'transparent' }}
       >
-        <Stack.Screen 
-          options={{ 
-            headerShown: false,
-          }} 
-        />
         <View style={styles.container}>
           <Map />
           <SelectedScooterSheet />
           <TouchableOpacity 
-            style={[
-              styles.menuButton, 
-              isRideActive && { opacity: 0.5 }
-            ]} 
+            style={[styles.menuButton, isRideActive && styles.disabledButton]} 
             onPress={toggleDrawer}
             disabled={isRideActive}
           >
-            <FontAwesome6 name={isDrawerOpen ? "times" : "bars"} size={24} color="#FFFBEA" />
+            <FontAwesome6 
+              name={isDrawerOpen ? "times" : "bars"} 
+              size={24} 
+              color="#FFFBEA" 
+            />
           </TouchableOpacity>
         </View>
       </Drawer>
@@ -57,23 +53,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  drawer: {
-    backgroundColor: '#FFFBEA',
-  },
   menuButton: {
     position: 'absolute',
     top: 50,
     left: 20,
-    backgroundColor: 'black',
-    borderRadius: 30,
-    width: 50,
-    height: 50,
-    justifyContent: 'center',
-    alignItems: 'center',
-    elevation: 5,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 3.84,
+    padding: 10, // Add some padding for a larger touch area
+  },
+  disabledButton: {
+    opacity: 0.5,
   },
 });
