@@ -10,18 +10,11 @@ import { useScooter } from '~/providers/ScooterProvider';
 Mapbox.setAccessToken(process.env.EXPO_PUBLIC_MAPBOX_KEY || '');
 
 export default function Map() {
-  const { selectedScooter, userLocation, isRideActive } = useScooter();
+  const { selectedScooter, userLocation, isRideActive, routeCoordinates } = useScooter();
 
-  const routeCoordinates = userLocation && selectedScooter
-    ? [
-        [userLocation.longitude, userLocation.latitude],
-        [selectedScooter.longitude, selectedScooter.latitude]
-      ]
-    : null;
-
-  console.log('userLocation:', userLocation);
-  console.log('selectedScooter:', selectedScooter);
-  console.log('routeCoordinates:', routeCoordinates);
+  console.log('Map - userLocation:', userLocation);
+  console.log('Map - selectedScooter:', selectedScooter);
+  console.log('Map - routeCoordinates:', routeCoordinates);
 
   return (
     <View style={{ flex: 1 }}>

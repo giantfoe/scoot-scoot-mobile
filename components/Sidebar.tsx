@@ -11,8 +11,12 @@ export default function Sidebar() {
   const router = useRouter();
 
   const handleSignOut = async () => {
-    await supabase.auth.signOut();
-    router.replace('/auth');
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      console.error('Error signing out:', error.message);
+    } else {
+      router.replace('/auth');
+    }
   };
 
   const SidebarContent = () => (
@@ -60,9 +64,9 @@ export default function Sidebar() {
         </TouchableOpacity>
       </View>
 
-      <TouchableOpacity style={styles.signOutButton} onPress={handleSignOut}>
-        <FontAwesome6 name="sign-out-alt" size={20} color="#FF3B30" />
-        <Text style={styles.signOutText}>Sign Out</Text>
+      <TouchableOpacity style={styles.menuItem} onPress={handleSignOut}>
+        <FontAwesome6 name="right-from-bracket" size={20} color="#FFFBEA" />
+        <Text style={styles.menuItemText}>Sign Out</Text>
       </TouchableOpacity>
     </ScrollView>
   );
@@ -144,16 +148,5 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#FFFBEA',
     marginLeft: 10,
-  },
-  signOutButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 20,
-  },
-  signOutText: {
-    fontSize: 16,
-    color: '#FF3B30',
-    marginLeft: 10,
-    fontWeight: 'bold',
   },
 });

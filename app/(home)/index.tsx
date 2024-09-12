@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 50,
     left: 20,
-    backgroundColor: '#481700',
+    backgroundColor: 'black',
     borderRadius: 30,
     width: 50,
     height: 50,
@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
     elevation: 5,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
+    shadowOpacity: 0.05,
     shadowRadius: 3.84,
   },
 });

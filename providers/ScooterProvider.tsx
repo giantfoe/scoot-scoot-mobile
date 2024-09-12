@@ -3,10 +3,14 @@ import { point } from '@turf/helpers';
 import * as Location from 'expo-location';
 import { PropsWithChildren, createContext, useContext, useEffect, useState } from 'react';
 import { Alert } from 'react-native';
+import { BlurView } from 'expo-blur';
 
 import { supabase } from '~/lib/supabase';
 import { getDirections } from '~/services/directions';
+import MapboxDirectionsFactory from '@mapbox/mapbox-sdk/services/directions';
 
+// Add this near the top of your file, after your imports
+const directionsClient = MapboxDirectionsFactory({ accessToken: process.env.EXPO_PUBLIC_MAPBOX_KEY || '' });
 
 // Define the shape of your context
 interface ScooterContextType {
@@ -36,6 +40,7 @@ export default function ScooterProvider({ children }: PropsWithChildren) {
   const [isNearby, setIsNearby] = useState(false);
   const [rideDistance, setRideDistance] = useState(0);
   const [direction, setDirection] = useState<any>(null);
+  const [routeCoordinates, setRouteCoordinates] = useState<[number, number][] | null>(null);
 
   const startJourney = (scooter: any) => {
     setSelectedScooter(scooter);
@@ -130,24 +135,43 @@ export default function ScooterProvider({ children }: PropsWithChildren) {
     };
   }, [selectedScooter]);
 
-  useEffect(() => {
-    const fetchDirections = async () => {
-      if (selectedScooter && userLocation) {
-        try {
-          const newDirection = await getDirections(
-            [userLocation.longitude, userLocation.latitude],
-            [selectedScooter.long, selectedScooter.lat]
-          );
-          setDirection(newDirection);
-        } catch (error) {
-          console.error('Error fetching directions:', error);
-          Alert.alert('Error', 'Failed to fetch directions');
-        }
-      }
-    };
+  const fetchDirections = async (start: [number, number], end: [number, number]) => {
+    try {
+      const response = await directionsClient.getDirections({
+        profile: 'walking',
+        geometries: 'geojson',
+        waypoints: [
+          { coordinates: start },
+          { coordinates: end }
+        ],
+      }).send();
 
-    fetchDirections();
-  }, [selectedScooter, userLocation]);
+      if (response && response.body && response.body.routes && response.body.routes[0]) {
+        return response.body.routes[0].geometry.coordinates;
+      } else {
+        console.error('No route found');
+        return null;
+      }
+    } catch (error) {
+      console.error('Error fetching directions:', error);
+      return null;
+    }
+  };
+
+  useEffect(() => {
+    if (userLocation && selectedScooter) {
+      const start: [number, number] = [userLocation.longitude, userLocation.latitude];
+      const end: [number, number] = [selectedScooter.long, selectedScooter.lat];
+      
+      fetchDirections(start, end).then(coordinates => {
+        if (coordinates) {
+          setRouteCoordinates(coordinates);
+        }
+      });
+    } else {
+      setRouteCoordinates(null);
+    }
+  }, [userLocation, selectedScooter]);
 
   const contextValue: ScooterContextType = {
     nearbyScooters,
@@ -163,6 +187,7 @@ export default function ScooterProvider({ children }: PropsWithChildren) {
     direction,
     setDirection,
     distance: 0,
+    routeCoordinates,
     // Add other properties as needed
   };
 

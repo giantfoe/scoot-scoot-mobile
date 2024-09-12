@@ -1,10 +1,12 @@
 import { LineLayer, ShapeSource } from '@rnmapbox/maps';
 
 interface LineRouteProps {
-  coordinates: number[][];
+  coordinates: [number, number][];
 }
 
 export default function LineRoute({ coordinates }: LineRouteProps) {
+  console.log('LineRoute - coordinates:', coordinates);
+
   return (
     <ShapeSource id="routeSource" shape={{
       type: 'Feature',
@@ -17,8 +19,8 @@ export default function LineRoute({ coordinates }: LineRouteProps) {
       <LineLayer
         id="routeFill"
         style={{
-          lineColor: '#42E100',
-          lineWidth: 3,
+          lineColor: 'red',
+          lineWidth: 5,
           lineCap: 'round',
           lineJoin: 'round'
         }}
