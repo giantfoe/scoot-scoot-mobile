@@ -38,7 +38,10 @@ export default function Sidebar() {
 
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Settings</Text>
-        <TouchableOpacity style={styles.menuItem}>
+        <TouchableOpacity 
+          style={styles.menuItem} 
+          onPress={() => router.push('/Profile')}
+        >
           <FontAwesome6 name="user" size={20} color="#FFFBEA" />
           <Text style={styles.menuItemText}>Profile</Text>
         </TouchableOpacity>

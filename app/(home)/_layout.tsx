@@ -1,5 +1,4 @@
-import { Redirect, Slot } from 'expo-router';
-
+import { Stack, Redirect } from 'expo-router';
 import { useAuth } from '~/providers/AuthProvider';
 
 export default function HomeLayout() {
@@ -9,5 +8,10 @@ export default function HomeLayout() {
     return <Redirect href="/auth" />;
   }
 
-  return <Slot />;
+  return (
+    <Stack screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="index" />
+      <Stack.Screen name="Profile" />
+    </Stack>
+  );
 }
