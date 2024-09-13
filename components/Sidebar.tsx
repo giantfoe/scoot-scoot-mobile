@@ -8,7 +8,7 @@ import { useScooter } from '~/providers/ScooterProvider';
 
 export default function Sidebar() {
   const router = useRouter();
-  const { balance } = useScooter();
+  const { balance, openWallet } = useScooter();
 
   const handleSignOut = async () => {
     const { error } = await supabase.auth.signOut();
@@ -28,11 +28,11 @@ export default function Sidebar() {
 
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Wallet</Text>
-          <View style={styles.balanceContainer}>
+          <TouchableOpacity style={styles.balanceContainer} onPress={openWallet}>
             <FontAwesome6 name="wallet" size={24} color="#FFFBEA" />
             <Text style={styles.balance}>${balance.toFixed(2)}</Text>
-          </View>
-          <TouchableOpacity style={styles.button}>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button} onPress={openWallet}>
             <Text style={styles.buttonText}>Add Funds</Text>
           </TouchableOpacity>
         </View>
@@ -94,6 +94,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 10,
+    padding: 10,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    borderRadius: 5,
   },
   balance: {
     fontSize: 24,
