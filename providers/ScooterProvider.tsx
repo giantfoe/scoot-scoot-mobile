@@ -2,7 +2,7 @@ import getDistance from '@turf/distance';
 import { point } from '@turf/helpers';
 import * as Location from 'expo-location';
 import { PropsWithChildren, createContext, useContext, useEffect, useState } from 'react';
-import { Alert, NativeModules } from 'react-native';
+import { Alert, NativeModules, Platform } from 'react-native';
 import { BlurView } from 'expo-blur';
 
 import { supabase } from '~/lib/supabase';
@@ -54,7 +54,7 @@ export default function ScooterProvider({ children }: PropsWithChildren) {
     setRideDistance(0);
     setIsNearby(false);
     // Add any other logic needed when starting a journey
-    if (Platform.OS === 'ios') {
+    if (Platform.OS === 'ios' && ScooterRideActivity) {
       try {
         const id = await ScooterRideActivity.startRideActivity(scooter.id);
         setActivityId(id);
@@ -231,7 +231,7 @@ export default function ScooterProvider({ children }: PropsWithChildren) {
   // Set up a timer to update the ride duration
   useEffect(() => {
     let timer: NodeJS.Timeout;
-    if (isRideActive && Platform.OS === 'ios' && activityId) {
+    if (isRideActive && Platform.OS === 'ios' && ScooterRideActivity && activityId) {
       timer = setInterval(async () => {
         try {
           await ScooterRideActivity.updateRideActivity(activityId, rideDistance);
