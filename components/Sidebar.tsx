@@ -50,7 +50,10 @@ export default function Sidebar() {
             <FontAwesome6 name="bell" size={20} color="#FFFBEA" />
             <Text style={styles.menuItemText}>Notifications</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.menuItem}>
+          <TouchableOpacity 
+            style={styles.menuItem} 
+            onPress={() => router.push('/PrivacyPolicy')}
+          >
             <FontAwesome6 name="shield" size={20} color="#FFFBEA" />
             <Text style={styles.menuItemText}>Privacy</Text>
           </TouchableOpacity>

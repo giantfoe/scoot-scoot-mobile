@@ -21,7 +21,9 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.vadinsavin.LimeApp"
@@ -31,7 +33,11 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.vadinsavin.LimeApp"
+      "package": "com.vadinsavin.LimeApp",
+      "permissions": [
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION"
+      ]
     },
     "plugins": [
       "expo-router",
@@ -48,6 +54,14 @@
           "locationWhenInUsePermission": "Show current location on map."
         }
       ]
-    ]
+    ],
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "69c37ec0-2a9e-4244-8d1e-9c3fe36b84d8"
+      }
+    }
   }
 }

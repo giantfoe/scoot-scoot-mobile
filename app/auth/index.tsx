@@ -1,96 +1,69 @@
 import { Button, Input } from '@rneui/themed';
 import React, { useState } from 'react';
-import { Alert, StyleSheet, View, AppState } from 'react-native';
-
-import { supabase } from '../../lib/supabase';
-
-// Tells Supabase Auth to continuously refresh the session automatically if
-// the app is in the foreground. When this is added, you will continue to receive
-// `onAuthStateChange` events with the `TOKEN_REFRESHED` or `SIGNED_OUT` event
-// if the user's session is terminated. This should only be registered once.
-AppState.addEventListener('change', (state) => {
-  if (state === 'active') {
-    supabase.auth.startAutoRefresh();
-  } else {
-    supabase.auth.stopAutoRefresh();
-  }
-});
+import { Alert, StyleSheet, View } from 'react-native';
+import { supabase } from '../../lib/supabase'; // Ensure this path is correct
 
 export default function Auth() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
-  async function signInWithEmail() {
+  const signIn = async () => {
     setLoading(true);
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    const { error } = await supabase.auth.signIn({ email, password });
 
-    if (error) Alert.alert(error.message);
+    if (error) {
+      Alert.alert(error.message);
+    } else {
+      Alert.alert('Successfully signed in!');
+      // Navigate to the next screen or perform any other action
+    }
     setLoading(false);
-  }
-
-  async function signUpWithEmail() {
-    setLoading(true);
-    const {
-      data: { session },
-      error,
-    } = await supabase.auth.signUp({
-      email,
-      password,
-    });
-
-    if (error) Alert.alert(error.message);
-    if (!session) Alert.alert('Please check your inbox for email verification!');
-    setLoading(false);
-  }
+  };
 
   return (
     <View style={styles.container}>
-      <View style={[styles.verticallySpaced, styles.mt20]}>
+      <View style={styles.inputContainer}>
         <Input
           label="Email"
-          leftIcon={{ type: 'font-awesome', name: 'envelope' }}
           onChangeText={(text) => setEmail(text)}
           value={email}
-          placeholder="email@address.com"
+          placeholder="Enter your email"
+          keyboardType="email-address"
           autoCapitalize="none"
+          containerStyle={styles.inputField}
         />
-      </View>
-      <View style={styles.verticallySpaced}>
         <Input
           label="Password"
-          leftIcon={{ type: 'font-awesome', name: 'lock' }}
           onChangeText={(text) => setPassword(text)}
           value={password}
+          placeholder="Enter your password"
           secureTextEntry
-          placeholder="Password"
           autoCapitalize="none"
+          containerStyle={styles.inputField}
         />
       </View>
-      <View style={[styles.verticallySpaced, styles.mt20]}>
-        <Button title="Sign in" disabled={loading} onPress={() => signInWithEmail()} />
-      </View>
-      <View style={styles.verticallySpaced}>
-        <Button title="Sign up" disabled={loading} onPress={() => signUpWithEmail()} />
-      </View>
+      <Button title="Sign In" disabled={loading} onPress={signIn} buttonStyle={styles.button} />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 40,
-    padding: 12,
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
   },
-  verticallySpaced: {
-    paddingTop: 4,
-    paddingBottom: 4,
-    alignSelf: 'stretch',
+  inputContainer: {
+    width: '75%', // Set the width to 3/4 of the page
   },
-  mt20: {
-    marginTop: 20,
+  inputField: {
+    marginBottom: 20,
+  },
+  button: {
+    backgroundColor: '#42E100', // Green color for the button
+    borderRadius: 10,
+    width: '75%', // Match button width to input fields
   },
 });

@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
     right: 20,
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'darkgrey',
+    backgroundColor: 'orange',
     borderRadius: 20,
     padding: 10,
     elevation: 5,
