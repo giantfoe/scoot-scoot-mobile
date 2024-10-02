@@ -300,6 +300,20 @@ SFX.die.src = "sfx/die.wav";
 console.log("Game script loaded");
 console.log("Canvas element:", scrn);
 
+// Function to handle the flap action
+const flap = () => {
+    // Implement your flap logic here
+    console.log("Flap!"); // For debugging
+    // Example: Change the bird's vertical position
+};
+
+// Listen for messages from the React Native app
+window.addEventListener("message", (event) => {
+    if (event.data === 'flap') {
+        flap(); // Call the flap function when the message is received
+    }
+});
+
 function gameLoop() {
   update();
   draw();

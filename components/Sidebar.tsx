@@ -59,12 +59,12 @@ export default function Sidebar() {
           </TouchableOpacity>
         </View>
 
-        {/* Add the letscoot button here */}
+        {/* Change this button to route to CombinedScreen */}
         <TouchableOpacity 
           style={styles.button} 
-          onPress={() => router.push('/GameScreen')} // Link to the GameScreen
+          onPress={() => router.push('/CombinedScreen')} // Updated to route to CombinedScreen
         >
-          <Text style={styles.buttonText}>letscoot</Text>
+          <Text style={styles.buttonText}>Go to Combined Screen</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.signOutButton} onPress={handleSignOut}>

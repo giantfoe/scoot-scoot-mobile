@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { StyleSheet, View, TouchableOpacity, Text } from 'react-native';
 import { WebView } from 'react-native-webview';
 import { useRouter } from 'expo-router'; // Import useRouter for navigation

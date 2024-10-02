@@ -5,6 +5,7 @@ import { Drawer } from 'react-native-drawer-layout';
 import { useState } from 'react';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import { useScooter } from '~/providers/ScooterProvider';
+import { useRouter } from 'expo-router';
 
 import Map from '~/components/Map';
 import SelectedScooterSheet from '~/components/SelectedScooterSheet';
@@ -13,6 +14,7 @@ import Sidebar from '~/components/Sidebar';
 export default function Home() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const { isRideActive } = useScooter();
+  const router = useRouter();
 
   const toggleDrawer = () => {
     setIsDrawerOpen(!isDrawerOpen);
@@ -34,7 +36,7 @@ export default function Home() {
           <SelectedScooterSheet />
           <TouchableOpacity 
             style={[styles.menuButton, isRideActive && styles.disabledButton]} 
-            onPress={toggleDrawer}
+            onPress={() => router.push('/CombinedScreen')} // Updated to route to CombinedScreen
             disabled={isRideActive}
           >
             <FontAwesome6 
