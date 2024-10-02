@@ -1,0 +1,22 @@
+#canvas
+{
+    background-color:#30c0df;
+    border: 2px solid black;
+    display: block;
+    margin: auto;
+    padding: auto;
+    
+}
+
+body {
+    margin: 0;
+    overflow: hidden; /* Prevent scrolling */
+    height: 100vh; /* Ensure body takes full height */
+}
+
+canvas {
+    display: block; /* Remove default inline spacing */
+    width: 100vw; /* Full viewport width */
+    height: 100vh; /* Full viewport height */
+    touch-action: none; /* Prevent default touch actions */
+}

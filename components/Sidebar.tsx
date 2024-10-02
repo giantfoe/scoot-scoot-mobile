@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Platform } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Platform, Button } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import { useRouter } from 'expo-router';
@@ -58,6 +58,14 @@ export default function Sidebar() {
             <Text style={styles.menuItemText}>Privacy</Text>
           </TouchableOpacity>
         </View>
+
+        {/* Add the letscoot button here */}
+        <TouchableOpacity 
+          style={styles.button} 
+          onPress={() => router.push('/GameScreen')} // Link to the GameScreen
+        >
+          <Text style={styles.buttonText}>letscoot</Text>
+        </TouchableOpacity>
 
         <TouchableOpacity style={styles.signOutButton} onPress={handleSignOut}>
           <Text style={styles.signOutText}>Sign Out</Text>
