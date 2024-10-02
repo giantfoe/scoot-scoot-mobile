@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity, Alert, SafeAreaView } from 'react-native';
+import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity, SafeAreaView } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { useScooter } from '~/providers/ScooterProvider';
@@ -18,15 +18,17 @@ const CombinedScreen = () => {
   });
 
   useEffect(() => {
-    // Fetch user email and ride stats here
     const fetchUserData = async () => {
       const { data, error } = await supabase.auth.getUser();
       if (data) {
         setEmail(data.user.email);
+
+
+
       }
       // Fetch ride stats logic here
     };
-    fetchUserData();
+    fetchUserData(); 
   }, []);
 
   return (
@@ -38,7 +40,12 @@ const CombinedScreen = () => {
     >
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.header}>
-          <Text style={styles.headerText}>My Wallet</Text>
+          <TouchableOpacity onPress={() => router.push('/')}> 
+            <FontAwesome6 name="arrow-left" size={24} color="#FFFBEA" />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => router.push('/')}> 
+            <Text style={styles?.headerText}>My Wallet</Text>
+          </TouchableOpacity>
           <TouchableOpacity style={styles.walletButton} onPress={openWallet}>
             <FontAwesome6 name="wallet" size={20} color="#FFFBEA" />
             <Text style={styles.balanceText}>
@@ -65,7 +72,7 @@ const CombinedScreen = () => {
           </View>
 
           <View style={styles.actionContainer}>
-            <TouchableOpacity style={styles.actionButton} onPress={() => router.push('/CombinedScreen')}>
+            <TouchableOpacity style={styles.actionButton} onPress={() => router.push('/GameScreen')}>
               <Text style={styles.actionButtonText}>Let Skoot</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.actionButton} onPress={() => router.push('/TransactionHistory')}>
@@ -90,6 +97,7 @@ const styles = StyleSheet.create({
   },
   header: {
     flexDirection: 'row',
+    alignItems: 'center',
     justifyContent: 'space-between',
     padding: 20,
     backgroundColor: 'rgba(0, 0, 0, 0.8)',
