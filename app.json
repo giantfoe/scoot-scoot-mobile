@@ -42,13 +42,6 @@
     "plugins": [
       "expo-router",
       [
-        "@rnmapbox/maps",
-        {
-          "RNMapboxMapsDownloadToken": "sk.eyJ1Ijoibm90anVzdGRldiIsImEiOiJjbHh5aXBmNHgwMTltMmlzZjhuaHVyZzBvIn0.HJH5okWL7TmSoCjsM8Ub0A",
-          "RNMapboxMapsVersion": "11.0.0"
-        }
-      ],
-      [
         "expo-location",
         {
           "locationWhenInUsePermission": "Show current location on map."
@@ -56,12 +49,8 @@
       ]
     ],
     "extra": {
-      "router": {
-        "origin": false
-      },
-      "eas": {
-        "projectId": "69c37ec0-2a9e-4244-8d1e-9c3fe36b84d8"
-      }
-    }
+      "googleMapsApiKey": "AIzaSyC5u0GIC21S7rhxo4vr6GGUIsWvg6U5Mbg"
+    },
+    "jsEngine": "hermes"
   }
 }

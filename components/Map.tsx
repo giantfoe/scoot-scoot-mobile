@@ -1,19 +1,47 @@
 import React, { useEffect, useState } from 'react';
-import Mapbox, { Camera, LocationPuck, MapView, Polyline } from '@rnmapbox/maps';
-import { View } from 'react-native';
-
+import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
+import MapView, { Marker, Polyline } from 'react-native-maps';
+import * as Location from 'expo-location';
 import LineRoute from './LineRoute';
 import ScooterMarkers from './ScooterMarkers';
 import RideActive from './RideActive';
 import WalletBalance from './WalletBalance';
-
 import { useScooter } from '~/providers/ScooterProvider';
 
-Mapbox.setAccessToken(process.env.EXPO_PUBLIC_MAPBOX_KEY || '');
-
 export default function Map() {
-  const { selectedScooter, userLocation, isRideActive, routeCoordinates } = useScooter();
+  const { selectedScooter, isRideActive, routeCoordinates } = useScooter();
   const [route, setRoute] = useState([]);
+  const [userLocation, setUserLocation] = useState(null);
+  const [mapRegion, setMapRegion] = useState({
+    latitude: 37.78825,
+    longitude: -122.4324,
+    latitudeDelta: 0.0922,
+    longitudeDelta: 0.0421,
+  });
+
+  useEffect(() => {
+    (async () => {
+      // Request permission to access location
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        console.error('Permission to access location was denied');
+        return;
+      }
+
+      // Get the user's current location
+      let location = await Location.getCurrentPositionAsync({});
+      setUserLocation({
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+      });
+      setMapRegion({
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421,
+      });
+    })();
+  }, []);
 
   useEffect(() => {
     if (userLocation && selectedScooter) {
@@ -23,10 +51,14 @@ export default function Map() {
 
   const fetchRoute = async (start, end) => {
     try {
-      const response = await fetch(`https://api.mapbox.com/directions/v5/mapbox/driving/${start.longitude},${start.latitude};${end.longitude},${end.latitude}?geometries=geojson&access_token=${process.env.EXPO_PUBLIC_MAPBOX_KEY}`);
+      const response = await fetch(`https://maps.googleapis.com/maps/api/directions/json?origin=${start.latitude},${start.longitude}&destination=${end.latitude},${end.longitude}&key=${process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY}`);
       const data = await response.json();
       if (data.routes.length > 0) {
-        setRoute(data.routes[0].geometry.coordinates);
+        const coordinates = data.routes[0].legs[0].steps.map(step => ({
+          latitude: step.end_location.lat,
+          longitude: step.end_location.lng,
+        }));
+        setRoute(coordinates);
       } else {
         console.error('No routes found');
       }
@@ -35,27 +67,56 @@ export default function Map() {
     }
   };
 
+  const centerMapOnUserLocation = () => {
+    if (userLocation) {
+      setMapRegion({
+        latitude: userLocation.latitude,
+        longitude: userLocation.longitude,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421,
+      });
+    }
+  };
+
   return (
     <View style={{ flex: 1 }}>
-      <MapView style={{ flex: 1 }} styleURL="mapbox://styles/mapbox/dark-v11">
-        <Camera 
-          followZoomLevel={isRideActive ? 25 : 14}
-          followUserLocation
-          followUserMode="normal"
-          centerCoordinate={userLocation ? [userLocation.longitude, userLocation.latitude] : undefined}
-        />
-        <LocationPuck puckBearingEnabled puckBearing="heading" pulsing={{ isEnabled: true }} />
+      <MapView
+        style={{ flex: 1 }}
+        region={mapRegion} // Use the state for the map region
+      >
+        {userLocation && (
+          <Marker coordinate={userLocation} title="Your Location" />
+        )}
         {route.length > 0 && (
           <Polyline
-            coordinates={route.map(coord => [coord[0], coord[1]])} // Ensure coordinates are in the correct format
-            lineColor="#42E100"
-            lineWidth={4}
+            coordinates={route}
+            strokeColor="#42E100"
+            strokeWidth={4}
           />
         )}
         <ScooterMarkers />
         {routeCoordinates && <LineRoute coordinates={routeCoordinates} />}
       </MapView>
       {isRideActive ? <RideActive /> : <WalletBalance />}
+      <TouchableOpacity style={styles.locateButton} onPress={centerMapOnUserLocation}>
+        <Text style={styles.buttonText}>Locate Me</Text>
+      </TouchableOpacity>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  locateButton: {
+    position: 'absolute',
+    bottom: 20,
+    right: 20,
+    backgroundColor: '#42E100',
+    padding: 10,
+    borderRadius: 5,
+    elevation: 3,
+  },
+  buttonText: {
+    color: '#FFF',
+    fontWeight: 'bold',
+  },
+});

@@ -1,30 +1,18 @@
-import { LineLayer, ShapeSource } from '@rnmapbox/maps';
+import React from 'react';
+import { Polyline } from 'react-native-maps';
 
 interface LineRouteProps {
-  coordinates: [number, number][];
+  coordinates: { latitude: number; longitude: number }[];
 }
 
-export default function LineRoute({ coordinates }: LineRouteProps) {
-  console.log('LineRoute - coordinates:', coordinates);
-
+const LineRoute: React.FC<LineRouteProps> = ({ coordinates }) => {
   return (
-    <ShapeSource id="routeSource" shape={{
-      type: 'Feature',
-      properties: {},
-      geometry: {
-        type: 'LineString',
-        coordinates: coordinates
-      }
-    }}>
-      <LineLayer
-        id="routeFill"
-        style={{
-          lineColor: 'red',
-          lineWidth: 5,
-          lineCap: 'round',
-          lineJoin: 'round'
-        }}
-      />
-    </ShapeSource>
+    <Polyline
+      coordinates={coordinates}
+      strokeColor="#42E100"
+      strokeWidth={4}
+    />
   );
-}
+};
+
+export default LineRoute;
