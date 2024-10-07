@@ -63,12 +63,13 @@ export default function RideActive() {
 const styles = StyleSheet.create({
   container: {
     position: 'absolute',
-    top: 50,
+    top: 50, // Adjust this value to position it correctly
     left: 20,
     right: 20,
     backgroundColor: '#FFFBEA',
     borderRadius: 15,
     padding: 20,
+    zIndex: 1000, // Ensure it appears above the map
   },
   content: {
     gap: 20,

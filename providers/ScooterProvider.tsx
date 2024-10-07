@@ -9,7 +9,6 @@ import { supabase } from '~/lib/supabase';
 import { getDirections } from '~/services/directions';
 import MapboxDirectionsFactory from '@mapbox/mapbox-sdk/services/directions';
 
-
 // Add this near the top of your file, after your imports
 const directionsClient = MapboxDirectionsFactory({ accessToken: process.env.EXPO_PUBLIC_MAPBOX_KEY || '' });
 
